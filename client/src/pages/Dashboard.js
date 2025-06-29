@@ -1,5 +1,9 @@
-// Dashboard.jsx (Frontend Component)
+// Dashboard.jsx (Merged with Chatbot)
 import React, { useState } from "react";
+import Chatbot from "../components/Chatbot"; // ✅ Import Chatbot component
+
+
+ // ✅ Optional: if chatbot CSS is placed here
 
 const Dashboard = () => {
   const [formData, setFormData] = useState({
@@ -89,19 +93,21 @@ const Dashboard = () => {
   const startMockInterview = async () => {
     try {
       const token = getToken();
-
+      
       const res = await fetch("http://localhost:5000/api/interview/mock", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ role: formData.careerGoals }),
+        body: JSON.stringify({ role: "client"}),
       });
 
       const data = await res.json();
+      console.log(data)
       alert("🎙️ Mock Interview Questions:\n\n" + data.interview);
     } catch (err) {
+      console.log(err)
       alert("❌ Failed to fetch mock interview.");
       console.error(err);
     }
@@ -175,6 +181,12 @@ const Dashboard = () => {
             </div>
           </>
         )}
+
+        {/* ✅ Embedded Chatbot Section */}
+        <div style={{ marginTop: "40px" }}>
+          <h3>💬 Ask our AI Career Chatbot</h3>
+          <Chatbot />
+        </div>
       </div>
     </div>
   );

@@ -3,38 +3,45 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 
-// Importing route files
-const authRoutes = require("./routes/authRoutes");               // 🔒 User login/register
-const resumeRoutes = require("./routes/resumeRoutes");           // 📄 Resume generation
-const mockInterviewRoutes = require("./routes/mockInterviewRoutes"); // 🎤 Mock interview
-const skillAnalysisRoutes = require("./routes/skillAnalysisRoutes"); // 📊 Skill gap analysis
+// ==== 🔌 Route Imports ====
+const authRoutes = require("./routes/authRoutes");                      // 🔐 User login/register
+const resumeRoutes = require("./routes/resumeRoutes");                 // 📄 Resume generator
+const mockInterviewRoutes = require("./routes/mockInterviewRoutes");   // 🎤 Mock interview Q&A
+const skillAnalysisRoutes = require("./routes/skillAnalysisRoutes");   // 📊 Skill gap analysis
+const chatRoutes = require("./routes/chat");                           // 💬 Chat/AI support
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-// === 🌐 Middleware ===
+// ==== 🌐 Middlewares ====
 app.use(cors());
 app.use(express.json());
 
-// === 🔗 API Routes ===
+// ==== 🔗 API Routes ====
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
-app.use("/api/interview", mockInterviewRoutes);   // ➕ Added
-app.use("/api/skills", skillAnalysisRoutes);      // ➕ Added
+app.use("/api/interview", mockInterviewRoutes);
+app.use("/api/skills", skillAnalysisRoutes);
+app.use("/api/chat", chatRoutes);
 
-// === 🛠 Test Route ===
+// ==== 🧪 Test Route ====
 app.get("/", (req, res) => {
-  res.send("🚀 Server is up and running!");
+  res.send("🚀 Smart Career Platform Server is Live!");
 });
 
-// === 🔗 MongoDB Connection ===
+// ==== 🗄️ MongoDB Connection ====
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log("✅ MongoDB connected successfully");
-    app.listen(5000, () =>
-      console.log("🌐 Server running on http://localhost:5000")
+    app.listen(PORT, () =>
+      console.log(`🌐 Server running at: http://localhost:${PORT}`)
     );
   })
   .catch((err) => {
     console.error("❌ MongoDB connection error:", err.message);
+    process.exit(1);
   });
